@@ -42,6 +42,14 @@ func ParseInt(number string) (int, error) {
 	return int(num), nil
 }
 
+func ParseLong(number string) (int64, error) {
+	num, err := strconv.ParseInt(number, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return num, nil
+}
+
 func ErrExit(messages ...any) {
 	fmt.Println(messages)
 	os.Exit(1)
