@@ -10,6 +10,7 @@ import (
 
 const INPUTS = "inputs/"
 const DEMO = INPUTS + "demo/"
+const DAYS = "days/"
 
 func main() {
 	args := os.Args[1:]
@@ -27,9 +28,22 @@ func main() {
 	case "run":
 		runDay(day)
 	case "demo":
+	case "create":
+		createDayIfMissing(day)
 	default:
 		util.ErrExit("Invalid command", command)
 	}
+}
+
+func createDayIfMissing(day int) {
+	if err := os.MkdirAll(DEMO, os.ModePerm); err != nil {
+		util.ErrExit("Failed to create output directory", err)
+	}
+	strDay := strconv.Itoa(day)
+	inputFileName := "day" + strDay + ".txt"
+	util.CreateEmptyFile(INPUTS + inputFileName)
+	util.CreateEmptyFile(DEMO + inputFileName)
+	util.CreateEmptyFile(DAYS + "day" + strDay + ".go")
 }
 
 func runDay(day int) {
@@ -61,4 +75,5 @@ func printHelp() {
 	fmt.Println()
 	fmt.Println("Commands:")
 	fmt.Println("  run [day]")
+	fmt.Println("  create [day]")
 }

@@ -54,3 +54,10 @@ func ErrExit(messages ...any) {
 	fmt.Println(messages)
 	os.Exit(1)
 }
+
+func CreateEmptyFile(path string) {
+	f, err := os.OpenFile(path, os.O_CREATE|os.O_EXCL, os.ModePerm)
+	if err == nil {
+		f.Close()
+	}
+}

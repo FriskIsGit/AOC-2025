@@ -18,12 +18,22 @@ func TestDay1Part1Full(t *testing.T) {
 		return
 	}
 	actual := days.Day1Part1(lines)
-	equal(966, actual, t)
-	// 966 is too low
+	equal(1078, actual, t)
+}
+
+func TestDay1Part2Full(t *testing.T) {
+	lines, err := loadDayLines(1)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day1Part2(lines)
+	equal(5337, actual, t)
+	// 5337 is too low, 6955 is too high
 }
 
 func TestDay1Part1Demo(t *testing.T) {
-	lines, err := loadDemoLines("day1p1.txt")
+	lines, err := loadDemoLines("day1.txt")
 	if err != nil {
 		t.Error(err)
 		return
@@ -32,19 +42,49 @@ func TestDay1Part1Demo(t *testing.T) {
 	equal(3, actual, t)
 }
 
-func TestDay1Part1Custom(t *testing.T) {
-	lines, err := loadCustomLines("custom1p1.txt")
+func TestDay1Part2Demo(t *testing.T) {
+	lines, err := loadDemoLines("day1.txt")
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	actual := days.Day1Part1(lines)
-	equal(1, actual, t)
+	actual := days.Day1Part2(lines)
+	equal(6, actual, t)
 }
 
-func TestNextDialPos(t *testing.T) {
-	nextPos := days.NextDialPos(0, -150)
-	equal(50, nextPos, t)
+func TestGetZeroHitsExpect10(t *testing.T) {
+	zeroHits := days.GetZeroHits(50, 1000)
+	equal(10, zeroHits, t)
+}
+
+func TestGetZeroHitsNegative(t *testing.T) {
+	zeroHits := days.GetZeroHits(50, -250)
+	equal(3, zeroHits, t)
+}
+
+func TestGetZeroHitsFrom0To200(t *testing.T) {
+	zeroHits := days.GetZeroHits(0, 200)
+	equal(2, zeroHits, t)
+}
+
+func TestGetZeroHitsFrom0ToNegative200(t *testing.T) {
+	zeroHits := days.GetZeroHits(0, -200)
+	equal(2, zeroHits, t)
+}
+
+func TestGetZeroHitsExpect1(t *testing.T) {
+	zeroHits := days.GetZeroHits(20, -40)
+	equal(1, zeroHits, t)
+}
+
+func TestGetZeroHitsCustom(t *testing.T) {
+	zeroHits := days.GetZeroHits(50, -51)
+	equal(1, zeroHits, t)
+}
+
+func TestGetZeroHitsMoveFromZero(t *testing.T) {
+	zeroHits := days.GetZeroHits(0, -5)
+	equal(0, zeroHits, t)
 }
 
 func TestDay2Part1Full(t *testing.T) {
