@@ -3,9 +3,18 @@ package util
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 )
+
+func NumberOfDigits(posNum int64) int {
+	if posNum == 0 {
+		return 1
+	}
+	log10 := math.Log10(float64(posNum))
+	return int(math.Floor(log10)) + 1
+}
 
 func ReadLines(path string) ([]string, error) {
 	f, err := os.Open(path)
@@ -48,6 +57,10 @@ func ParseLong(number string) (int64, error) {
 		return 0, err
 	}
 	return num, nil
+}
+
+func LongToString(num int64) string {
+	return strconv.FormatInt(num, 10)
 }
 
 func ErrExit(messages ...any) {
