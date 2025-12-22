@@ -28,8 +28,7 @@ func TestDay1Part2Full(t *testing.T) {
 		return
 	}
 	actual := days.Day1Part2(lines)
-	equal(5337, actual, t)
-	// 5337 is too low, 6955 is too high
+	equal(6412, actual, t)
 }
 
 func TestDay1Part1Demo(t *testing.T) {
@@ -50,6 +49,46 @@ func TestDay1Part2Demo(t *testing.T) {
 	}
 	actual := days.Day1Part2(lines)
 	equal(6, actual, t)
+}
+
+func TestDay3Part1Full(t *testing.T) {
+	lines, err := loadDayLines(3)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day3Part1(lines)
+	equal(17278, actual, t)
+}
+
+func TestDay3Part2Full(t *testing.T) {
+	lines, err := loadDayLines(3)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day3Part2(lines)
+	equal(171528556468625, actual, t)
+}
+
+func TestDay3Part1Demo(t *testing.T) {
+	lines, err := loadDemoLines("day3.txt")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day3Part1(lines)
+	equal(357, actual, t)
+}
+
+func TestDay3Part2Demo(t *testing.T) {
+	lines, err := loadDemoLines("day3.txt")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day3Part2(lines)
+	equal(3121910778619, actual, t)
 }
 
 func TestGetZeroHitsExpect10(t *testing.T) {
@@ -117,6 +156,6 @@ func equal[T comparable](expected, actual T, t *testing.T) {
 	if expected == actual {
 		return
 	}
-	t.Errorf("Expected: %v\nActual:   %v\n", expected, actual)
+	t.Errorf("\nExpected: %v\nActual:   %v\n", expected, actual)
 	t.FailNow()
 }
