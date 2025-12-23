@@ -6,6 +6,7 @@ import (
 	"math"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func NumberOfDigits(posNum int64) int {
@@ -59,6 +60,18 @@ func ParseLong(number string) (int64, error) {
 	return num, nil
 }
 
+func ToBoard(lines []string) [][]byte {
+	rowCount := len(lines)
+	width := len(lines[0])
+	board := make([][]byte, rowCount)
+	for r := 0; r < rowCount; r++ {
+		row := make([]byte, width)
+		copy(row, lines[r])
+		board[r] = row
+	}
+	return board
+}
+
 func LongToString(num int64) string {
 	return strconv.FormatInt(num, 10)
 }
@@ -73,4 +86,20 @@ func CreateEmptyFile(path string) {
 	if err == nil {
 		f.Close()
 	}
+}
+
+type Range struct {
+	Start int64
+	End   int64
+}
+
+func NewRange(start, end int64) Range {
+	return Range{start, end}
+}
+
+func ParseRange(strRange string) Range {
+	left, right, _ := strings.Cut(strRange, "-")
+	start, _ := ParseLong(left)
+	end, _ := ParseLong(right)
+	return NewRange(start, end)
 }

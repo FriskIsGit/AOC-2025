@@ -12,7 +12,7 @@ func Day2Part1(input string) int64 {
 
 	invalidSum := int64(0)
 	for _, rang := range ranges {
-		for val := rang.start; val <= rang.end; val++ {
+		for val := rang.Start; val <= rang.End; val++ {
 			strValue := util.LongToString(val)
 			digitCount := len(strValue)
 			if digitCount%2 != 0 {
@@ -33,7 +33,7 @@ func Day2Part2(input string) int64 {
 
 	invalidSum := int64(0)
 	for _, rang := range ranges {
-		for val := rang.start; val <= rang.end; val++ {
+		for val := rang.Start; val <= rang.End; val++ {
 			strValue := util.LongToString(val)
 			digitCount := len(strValue)
 			half := digitCount / 2
@@ -67,28 +67,12 @@ func IsSequenceOf(str, pattern string) bool {
 	return true
 }
 
-func convertToRanges(input string) []Range {
+func convertToRanges(input string) []util.Range {
 	strRanges := strings.Split(input, ",")
-	var ranges []Range
+	var ranges []util.Range
 	for _, strRange := range strRanges {
-		r := ParseRange(strRange)
+		r := util.ParseRange(strRange)
 		ranges = append(ranges, r)
 	}
 	return ranges
-}
-
-type Range struct {
-	start int64
-	end   int64
-}
-
-func newRange(start, end int64) Range {
-	return Range{start, end}
-}
-
-func ParseRange(strRange string) Range {
-	left, right, _ := strings.Cut(strRange, "-")
-	start, _ := util.ParseLong(left)
-	end, _ := util.ParseLong(right)
-	return newRange(start, end)
 }
