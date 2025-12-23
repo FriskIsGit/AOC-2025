@@ -103,3 +103,29 @@ func ParseRange(strRange string) Range {
 	end, _ := ParseLong(right)
 	return NewRange(start, end)
 }
+
+func (r *Range) MergeWith(other *Range) Range {
+	mergedStart := min(r.Start, other.Start)
+	mergedEnd := max(r.End, other.End)
+	return Range{Start: mergedStart, End: mergedEnd}
+}
+
+func (r *Range) Overlaps(other *Range) bool {
+	return r.Start <= other.End && other.Start <= r.End
+}
+
+func (r *Range) Connects(other *Range) bool {
+	return r.End+1 == other.Start || r.Start == other.End+1
+}
+
+func (r *Range) Includes(value int64) bool {
+	return r.Start <= value && value <= r.End
+}
+
+func (r *Range) Length() int64 {
+	return r.End - r.Start + 1
+}
+
+func DeleteAt[T comparable](slice []T, index int) []T {
+	return append(slice[:index], slice[index+1:]...)
+}

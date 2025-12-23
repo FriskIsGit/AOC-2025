@@ -16,18 +16,15 @@ func Day3Part2(lines []string) int64 {
 	sum := int64(0)
 	for _, line := range lines {
 		start := 0
+		number := int64(0)
 		for d := 12; d >= 1; d-- {
 			maxDigit, index := FindMaxDigitWithin(start, len(line)-d+1, line)
 			start = index + 1
-			sum += int64(maxDigit) * POWERS_OF_10[d-1]
+			number = (number * 10) + int64(maxDigit)
 		}
+		sum += number
 	}
 	return sum
-}
-
-var POWERS_OF_10 = [13]int64{
-	1, 10, 100, 1000, 10_000, 100_000, 1_000_000, 10_000_000, 100_000_000, 1_000_000_000,
-	10_000_000_000, 100_000_000_000, 1_000_000_000_000,
 }
 
 // FindMaxDigitWithin returns (max, indexOfMax)
