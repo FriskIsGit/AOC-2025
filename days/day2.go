@@ -13,13 +13,14 @@ func Day2Part1(input string) int64 {
 	invalidSum := int64(0)
 	for _, rang := range ranges {
 		for val := rang.Start; val <= rang.End; val++ {
-			strValue := util.LongToString(val)
-			digitCount := len(strValue)
+			digitCount := util.NumberOfDigits(val)
 			if digitCount%2 != 0 {
 				continue
 			}
 			half := digitCount / 2
-			leftNum, rightNum := strValue[:half], strValue[half:]
+			magnitudeOf10 := POWERS_OF_10[half]
+			leftNum := val / magnitudeOf10
+			rightNum := val - (leftNum * magnitudeOf10)
 			if leftNum == rightNum {
 				invalidSum += val
 			}
@@ -47,6 +48,20 @@ func Day2Part2(input string) int64 {
 		}
 	}
 	return invalidSum
+}
+
+var POWERS_OF_10 = [13]int64{
+	1, 10, 100, 1000, 10_000, 100_000, 1_000_000, 10_000_000, 100_000_000, 1_000_000_000,
+	10_000_000_000, 100_000_000_000, 1_000_000_000_000,
+}
+
+func GetTrailingNumber(number int64, last int) int64 {
+	if last <= 0 {
+		return 0
+	}
+	magnitudeOf10 := POWERS_OF_10[last]
+	leadingDigits := number / magnitudeOf10
+	return number - (leadingDigits * magnitudeOf10)
 }
 
 // IsSequenceOf checks if str is a sequence of pattern
