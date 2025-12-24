@@ -12,19 +12,23 @@ func Day2Part1(input string) int64 {
 
 	invalidSum := int64(0)
 	for _, rang := range ranges {
-		for val := rang.Start; val <= rang.End; val++ {
-			digitCount := util.NumberOfDigits(val)
-			if digitCount%2 != 0 {
+		startNum := GetNearestHalvedNumber(rang.Start)
+		startDigitCount := util.NumberOfDigits(startNum)
+		startHalfNum := startNum / POWERS_OF_10[startDigitCount/2]
+
+		for halfNum := startHalfNum; ; halfNum++ {
+			digitCount := util.NumberOfDigits(halfNum)
+			magnitude := POWERS_OF_10[digitCount]
+			sequencedNum := halfNum*magnitude + halfNum
+			if sequencedNum > rang.End {
+				break
+			}
+			if sequencedNum < rang.Start {
 				continue
 			}
-			half := digitCount / 2
-			magnitudeOf10 := POWERS_OF_10[half]
-			leftNum := val / magnitudeOf10
-			rightNum := val - (leftNum * magnitudeOf10)
-			if leftNum == rightNum {
-				invalidSum += val
-			}
+			invalidSum += sequencedNum
 		}
+
 	}
 	return invalidSum
 }
@@ -55,13 +59,16 @@ var POWERS_OF_10 = [13]int64{
 	10_000_000_000, 100_000_000_000, 1_000_000_000_000,
 }
 
-func GetTrailingNumber(number int64, last int) int64 {
-	if last <= 0 {
-		return 0
+func GetNearestHalvedNumber(number int64) int64 {
+	digitCount := util.NumberOfDigits(number)
+	if digitCount%2 != 0 {
+		digitCount++
+		number = POWERS_OF_10[digitCount-1]
 	}
-	magnitudeOf10 := POWERS_OF_10[last]
-	leadingDigits := number / magnitudeOf10
-	return number - (leadingDigits * magnitudeOf10)
+
+	magnitudeOfHalf := POWERS_OF_10[digitCount/2]
+	leadingDigits := number / magnitudeOfHalf
+	return leadingDigits*magnitudeOfHalf + leadingDigits
 }
 
 // IsSequenceOf checks if str is a sequence of pattern
