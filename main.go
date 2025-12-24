@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 )
 
 const INPUTS = "inputs/"
@@ -48,18 +49,41 @@ func createDayIfMissing(day int) {
 
 func runDay(day int) {
 	var resultPart1, resultPart2 any
+	lines, err := loadDayLines(day)
+	if err != nil {
+		util.ErrExit("Missing input", err)
+	}
+
+	start := time.Now()
 	switch day {
 	case 1:
-		lines, err := loadDayLines(day)
-		if err != nil {
-			util.ErrExit("Missing input", err)
-		}
 		resultPart1 = days.Day1Part1(lines)
+		resultPart2 = days.Day1Part2(lines)
+	case 2:
+		input := lines[0]
+		resultPart1 = days.Day2Part1(input)
+		part1Taken := time.Since(start)
+		part2Start := time.Now()
+		resultPart2 = days.Day2Part2(input)
+		part2Taken := time.Since(part2Start)
+		fmt.Printf("\nTime taken p1: %v\n", part1Taken)
+		fmt.Printf("\nTime taken p2: %v\n", part2Taken)
+	case 3:
+		resultPart1 = days.Day3Part1(lines)
+		resultPart2 = days.Day3Part2(lines)
+	case 4:
+		resultPart1 = days.Day4Part1(lines)
+		resultPart2 = days.Day4Part2(lines)
+	case 5:
+		resultPart1 = days.Day5Part1(lines)
+		resultPart2 = days.Day5Part2(lines)
 	default:
 		util.ErrExit("Unimplemented day:", day)
 	}
-	fmt.Printf("RESULT (part 1):\n%v", resultPart1)
-	fmt.Printf("RESULT (part 2):\n%v", resultPart2)
+	timeTaken := time.Since(start)
+	fmt.Printf("\nTime taken: %v\n", timeTaken)
+	fmt.Printf("RESULT (part 1): %v\n", resultPart1)
+	fmt.Printf("RESULT (part 2): %v\n", resultPart2)
 }
 
 func loadDayLines(day int) ([]string, error) {
