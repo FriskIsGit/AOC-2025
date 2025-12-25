@@ -266,6 +266,50 @@ func TestDay5Part2Demo(t *testing.T) {
 	equal(14, actual, t)
 }
 
+// ----- DAY 6 -----
+
+func TestDay6Part1Full(t *testing.T) {
+	lines, err := loadDayLines(6)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day6Part1(lines)
+	equal(4580995422905, actual, t)
+}
+
+func TestDay6Part1Demo(t *testing.T) {
+	lines, err := loadDemoLines("day6.txt")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day6Part1(lines)
+	equal(4277556, actual, t)
+}
+
+func TestDay6Part2Full(t *testing.T) {
+	lines, err := loadDayLines(6)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day6Part2(lines)
+	equal(10875057285868, actual, t)
+}
+
+func TestDay6Part2Demo(t *testing.T) {
+	lines, err := loadDemoLines("day6.txt")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day6Part2(lines)
+	equal(3263827, actual, t)
+}
+
+// ----- DAY 7 -----
+
 // --- Util functions ---
 
 func loadDayLines(day int) ([]string, error) {

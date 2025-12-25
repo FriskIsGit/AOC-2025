@@ -62,12 +62,10 @@ func runDay(day int) {
 	case 2:
 		input := lines[0]
 		resultPart1 = days.Day2Part1(input)
-		part1Taken := time.Since(start)
 		part2Start := time.Now()
 		resultPart2 = days.Day2Part2(input)
 		part2Taken := time.Since(part2Start)
-		fmt.Printf("\nTime taken p1: %v\n", part1Taken)
-		fmt.Printf("\nTime taken p2: %v\n", part2Taken)
+		fmt.Printf("\nTime taken day2 part2: %v", part2Taken)
 	case 3:
 		resultPart1 = days.Day3Part1(lines)
 		resultPart2 = days.Day3Part2(lines)
@@ -77,6 +75,9 @@ func runDay(day int) {
 	case 5:
 		resultPart1 = days.Day5Part1(lines)
 		resultPart2 = days.Day5Part2(lines)
+	case 6:
+		resultPart1 = days.Day6Part1(lines)
+		resultPart2 = days.Day6Part2(lines)
 	default:
 		util.ErrExit("Unimplemented day:", day)
 	}
