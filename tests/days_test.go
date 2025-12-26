@@ -310,6 +310,16 @@ func TestDay6Part2Demo(t *testing.T) {
 
 // ----- DAY 7 -----
 
+func TestDay7Part1Demo(t *testing.T) {
+	lines, err := loadDemoLines("day7.txt")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day7Part1(lines)
+	equal(21, actual, t)
+}
+
 // --- Util functions ---
 
 func loadDayLines(day int) ([]string, error) {

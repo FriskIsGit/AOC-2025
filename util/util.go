@@ -72,6 +72,12 @@ func ToBoard(lines []string) [][]byte {
 	return board
 }
 
+func PrintBoard(board [][]byte) {
+	for _, row := range board {
+		fmt.Println(string(row))
+	}
+}
+
 func LongToString(num int64) string {
 	return strconv.FormatInt(num, 10)
 }
@@ -126,6 +132,6 @@ func (r *Range) Length() int64 {
 	return r.End - r.Start + 1
 }
 
-func DeleteAt[T comparable](slice []T, index int) []T {
+func DeleteAt[T any](slice []T, index int) []T {
 	return append(slice[:index], slice[index+1:]...)
 }
