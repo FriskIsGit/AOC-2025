@@ -2,7 +2,6 @@ package days
 
 import (
 	"aoc-2025/util"
-	"fmt"
 )
 
 // --- Day 7: Laboratories ---
@@ -12,48 +11,40 @@ type Beam []int
 func Day7Part1(lines []string) int {
 	lines = removeEmptySpaceLines(lines)
 	board := util.ToBoard(lines)
-	startCol := findStartPointColumn(lines)
+	startCol := findStartPointColumn(lines[0])
 	splits := 0
 	var beams []Beam
-	beams = append(beams, Beam{0, startCol})
-	var allBeams []Beam
+	beams = append(beams, Beam{1, startCol})
 
 	rowCount := len(lines)
 	width := len(lines[0])
 	for len(beams) > 0 {
 		lastIndex := len(beams) - 1
 		rootBeam := beams[lastIndex]
-		row := rootBeam[0]
-		col := rootBeam[1]
+		row, col := rootBeam[0], rootBeam[1]
 		beams = util.DeleteAt(beams, lastIndex)
 
-		for r := row + 1; r < rowCount; r++ {
-			cell := lines[r][col]
-			if cell != '^' {
+		for r := row; r < rowCount; r++ {
+			cell := board[r][col]
+			if cell == '|' {
+				break
+			}
+			if cell == '.' {
+				board[r][col] = '|'
 				continue
 			}
-			fmt.Println()
-			fmt.Println()
-			util.PrintBoard(board)
+			// Must be a splitter
 			splits++
 			// Splitters are never right next to each other so it's safe to spawn beams on splitter's sides
 			leftCol := col - 1
 			rightCol := col + 1
 			if leftCol >= 0 {
-				board[r][leftCol] = '|'
 				leftBeam := Beam{r, leftCol}
-				if !containsBeam(allBeams, leftBeam) {
-					beams = append(beams, leftBeam)
-					allBeams = append(allBeams, leftBeam)
-				}
+				beams = append(beams, leftBeam)
 			}
 			if rightCol < width {
-				board[r][rightCol] = '|'
 				rightBeam := Beam{r, rightCol}
-				if !containsBeam(allBeams, rightBeam) {
-					beams = append(beams, rightBeam)
-					allBeams = append(allBeams, rightBeam)
-				}
+				beams = append(beams, rightBeam)
 			}
 			break
 		}
@@ -62,13 +53,46 @@ func Day7Part1(lines []string) int {
 	return splits
 }
 
-func containsBeam(beams []Beam, beam Beam) bool {
-	for _, b := range beams {
-		if b[0] == beam[0] && b[1] == beam[1] {
-			return true
+func Day7Part2(lines []string) int {
+	lines = removeEmptySpaceLines(lines)
+	board := util.ToBoard(lines)
+	startCol := findStartPointColumn(lines[0])
+	timelines := 1
+	var beams []Beam
+	beams = append(beams, Beam{0, startCol})
+
+	rowCount := len(lines)
+	width := len(lines[0])
+	for len(beams) > 0 {
+		lastIndex := len(beams) - 1
+		rootBeam := beams[lastIndex]
+		row, col := rootBeam[0], rootBeam[1]
+		beams = util.DeleteAt(beams, lastIndex)
+
+		for r := row + 1; r < rowCount; r++ {
+			cell := board[r][col]
+			if cell == '|' {
+				break
+			}
+			if cell == '.' {
+				board[r][col] = '|'
+				continue
+			}
+			timelines++
+			leftCol := col - 1
+			rightCol := col + 1
+			if leftCol >= 0 {
+				leftBeam := Beam{r, leftCol}
+				beams = append(beams, leftBeam)
+			}
+			if rightCol < width {
+				rightBeam := Beam{r, rightCol}
+				beams = append(beams, rightBeam)
+			}
+			break
 		}
 	}
-	return false
+	return timelines
 }
 
 func removeEmptySpaceLines(lines []string) []string {
@@ -85,9 +109,8 @@ func removeEmptySpaceLines(lines []string) []string {
 	return filtered
 }
 
-func findStartPointColumn(board []string) int {
-	row0 := board[0]
-	for c, val := range row0 {
+func findStartPointColumn(row string) int {
+	for c, val := range row {
 		if val == 'S' {
 			return c
 		}

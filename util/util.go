@@ -2,9 +2,11 @@ package util
 
 import (
 	"bufio"
+	"cmp"
 	"fmt"
 	"math"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -134,4 +136,35 @@ func (r *Range) Length() int64 {
 
 func DeleteAt[T any](slice []T, index int) []T {
 	return append(slice[:index], slice[index+1:]...)
+}
+
+func AbsInt(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
+
+func MaxInt(n1, n2 int) int {
+	if n1 > n2 {
+		return n1
+	}
+	return n2
+}
+
+func LargestN[T cmp.Ordered](arr []T, n int) []T {
+	if n == 0 {
+		return []T{}
+	}
+	maxes := make([]T, n, n+1)
+	for _, t := range arr {
+		for index, high := range maxes {
+			if t >= high {
+				slices.Insert(maxes, index, t)
+				maxes = maxes[:n]
+				break
+			}
+		}
+	}
+	return maxes
 }

@@ -3,6 +3,7 @@ package tests
 import (
 	"aoc-2025/days"
 	"aoc-2025/util"
+	"cmp"
 	"strconv"
 	"testing"
 )
@@ -310,6 +311,16 @@ func TestDay6Part2Demo(t *testing.T) {
 
 // ----- DAY 7 -----
 
+func TestDay7Part1Full(t *testing.T) {
+	lines, err := loadDayLines(7)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day7Part1(lines)
+	equal(1560, actual, t)
+}
+
 func TestDay7Part1Demo(t *testing.T) {
 	lines, err := loadDemoLines("day7.txt")
 	if err != nil {
@@ -318,6 +329,58 @@ func TestDay7Part1Demo(t *testing.T) {
 	}
 	actual := days.Day7Part1(lines)
 	equal(21, actual, t)
+}
+
+func TestDay7Part2Full(t *testing.T) {
+	t.FailNow()
+	lines, err := loadDayLines(7)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day7Part2(lines)
+	equal(-1, actual, t)
+}
+
+func TestDay7Part2Demo(t *testing.T) {
+	lines, err := loadDemoLines("day7.txt")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day7Part2(lines)
+	equal(40, actual, t)
+}
+
+// ----- DAY 8 -----
+
+func TestDay8Part1Full(t *testing.T) {
+	lines, err := loadDayLines(8)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day8Part1(lines)
+	equal(-1, actual, t)
+	// 448 is too low
+}
+
+func TestDay8Part1Demo(t *testing.T) {
+	lines, err := loadDemoLines("day8.txt")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day8Part1(lines)
+	equal(40, actual, t)
+}
+
+func TestLargestN(t *testing.T) {
+	arr := []int{1, 3, 9, 4, 2, -1, 4}
+	expected := []int{9, 4, 4, 3}
+
+	largest := util.LargestN(arr, 4)
+	arrayEquals(expected, largest, t)
 }
 
 // --- Util functions ---
@@ -364,4 +427,18 @@ func equalsFalse(actual bool, t *testing.T) {
 	}
 	t.Errorf("\nExpected: %v\nActual:   %v\n", false, actual)
 	t.FailNow()
+}
+func arrayEquals[T cmp.Ordered](expected, actual []T, t *testing.T) {
+	if len(expected) != len(actual) {
+		t.Errorf("\nExpected: %v\nActual:   %v\n", expected, actual)
+		t.FailNow()
+		return
+	}
+	for i := 0; i < len(expected); i++ {
+		if expected[i] != actual[i] {
+			t.Errorf("\nExpected: %v\nActual:   %v\n", expected, actual)
+			t.FailNow()
+			break
+		}
+	}
 }
