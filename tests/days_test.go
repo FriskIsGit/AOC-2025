@@ -332,14 +332,13 @@ func TestDay7Part1Demo(t *testing.T) {
 }
 
 func TestDay7Part2Full(t *testing.T) {
-	t.FailNow()
 	lines, err := loadDayLines(7)
 	if err != nil {
 		t.Error(err)
 		return
 	}
 	actual := days.Day7Part2(lines)
-	equal(-1, actual, t)
+	equal(25592971184998, actual, t)
 }
 
 func TestDay7Part2Demo(t *testing.T) {

@@ -57,42 +57,46 @@ func Day7Part2(lines []string) int {
 	lines = removeEmptySpaceLines(lines)
 	board := util.ToBoard(lines)
 	startCol := findStartPointColumn(lines[0])
-	timelines := 1
-	var beams []Beam
-	beams = append(beams, Beam{0, startCol})
-
-	rowCount := len(lines)
-	width := len(lines[0])
-	for len(beams) > 0 {
-		lastIndex := len(beams) - 1
-		rootBeam := beams[lastIndex]
-		row, col := rootBeam[0], rootBeam[1]
-		beams = util.DeleteAt(beams, lastIndex)
-
-		for r := row + 1; r < rowCount; r++ {
-			cell := board[r][col]
-			if cell == '|' {
-				break
-			}
-			if cell == '.' {
-				board[r][col] = '|'
+	memoBoard := createMemoBoard(board)
+	width := len(board[0])
+	height := len(board)
+	for r := height - 1; r >= 0; r-- {
+		for c := 0; c < width; c++ {
+			if board[r][c] != '^' {
 				continue
 			}
-			timelines++
-			leftCol := col - 1
-			rightCol := col + 1
+			leftCol, rightCol := c-1, c+1
+			leftWays, rightWays := 0, 0
 			if leftCol >= 0 {
-				leftBeam := Beam{r, leftCol}
-				beams = append(beams, leftBeam)
+				leftWays = countTimelines(r, leftCol, board, memoBoard)
 			}
 			if rightCol < width {
-				rightBeam := Beam{r, rightCol}
-				beams = append(beams, rightBeam)
+				rightWays = countTimelines(r, rightCol, board, memoBoard)
 			}
-			break
+			ways := leftWays + rightWays
+			memoBoard[r][c] = ways
 		}
 	}
-	return timelines
+	return countTimelines(0, startCol, board, memoBoard)
+}
+
+func countTimelines(row, col int, board [][]byte, memoBoard [][]int) int {
+	height := len(board)
+	// Position row below the original splitter
+	for down := row + 1; down < height; down++ {
+		if board[down][col] == '^' {
+			return memoBoard[down][col]
+		}
+	}
+	return 1
+}
+
+func createMemoBoard(board [][]byte) [][]int {
+	memoBoard := make([][]int, len(board))
+	for i, row := range board {
+		memoBoard[i] = make([]int, len(row))
+	}
+	return memoBoard
 }
 
 func removeEmptySpaceLines(lines []string) []string {
