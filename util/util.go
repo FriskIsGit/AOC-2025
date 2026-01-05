@@ -80,6 +80,12 @@ func PrintBoard(board [][]byte) {
 	}
 }
 
+func PrintIntBoard(board [][]int) {
+	for _, row := range board {
+		fmt.Println(row)
+	}
+}
+
 func LongToString(num int64) string {
 	return strconv.FormatInt(num, 10)
 }
@@ -143,13 +149,6 @@ func AbsInt(x int) int {
 		return -x
 	}
 	return x
-}
-
-func MaxInt(n1, n2 int) int {
-	if n1 > n2 {
-		return n1
-	}
-	return n2
 }
 
 func LargestN[T cmp.Ordered](arr []T, n int) []T {

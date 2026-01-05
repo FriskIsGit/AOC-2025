@@ -382,6 +382,28 @@ func TestLargestN(t *testing.T) {
 	arrayEquals(expected, largest, t)
 }
 
+// ----- DAY 9 -----
+
+func TestDay9Part1Full(t *testing.T) {
+	lines, err := loadDayLines(9)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day9Part1(lines)
+	equal(4739623064, actual, t)
+}
+
+func TestDay9Part1Demo(t *testing.T) {
+	lines, err := loadDemoLines("day9.txt")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day9Part1(lines)
+	equal(50, actual, t)
+}
+
 // --- Util functions ---
 
 func loadDayLines(day int) ([]string, error) {
