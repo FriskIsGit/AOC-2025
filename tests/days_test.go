@@ -4,6 +4,7 @@ import (
 	"aoc-2025/days"
 	"aoc-2025/util"
 	"cmp"
+	"math"
 	"strconv"
 	"testing"
 )
@@ -360,8 +361,7 @@ func TestDay8Part1Full(t *testing.T) {
 		return
 	}
 	actual := days.Day8Part1(lines, 1000)
-	equal(-1, actual, t)
-	// 448 is too low
+	equal(115885, actual, t)
 }
 
 func TestDay8Part1Demo(t *testing.T) {
@@ -372,6 +372,26 @@ func TestDay8Part1Demo(t *testing.T) {
 	}
 	actual := days.Day8Part1(lines, 10)
 	equal(40, actual, t)
+}
+
+func TestDay8Part2Demo(t *testing.T) {
+	lines, err := loadDemoLines("day8.txt")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day8Part2(lines, math.MaxInt32)
+	equal(25272, actual, t)
+}
+
+func TestDay8Part2Full(t *testing.T) {
+	lines, err := loadDayLines(8)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day8Part2(lines, math.MaxInt32)
+	equal(274150525, actual, t)
 }
 
 func TestPointMap(t *testing.T) {
