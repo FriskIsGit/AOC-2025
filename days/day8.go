@@ -9,17 +9,30 @@ import (
 )
 
 // --- Day 8: Playground ---
+// Although not explicitly stated the number of shortest connections to be made depends on the input type:
+// - demo = 10
+// - full = 1000
 
 type Point3D struct {
-	x, y, z int
+	X, Y, Z int
 }
 
+// Hash - max coordinate is approximately 100_000
 func (p Point3D) Hash() int64 {
-	return int64(p.x << 42 & p.y << 21 & p.z)
+	return int64(p.X<<42 | p.Y<<21 | p.Z)
+}
+
+const MASK = int64((1 << 21) - 1)
+
+func UnHash(hash int64) Point3D {
+	x := (hash >> 42) & MASK
+	y := (hash >> 21) & MASK
+	z := hash & MASK
+	return Point3D{int(x), int(y), int(z)}
 }
 
 func (p Point3D) String() string {
-	return fmt.Sprintf("(%d,%d,%d)", p.x, p.y, p.z)
+	return fmt.Sprintf("(%d,%d,%d)", p.X, p.Y, p.Z)
 }
 
 func NewPoint3D(x, y, z int) Point3D {
@@ -27,20 +40,14 @@ func NewPoint3D(x, y, z int) Point3D {
 }
 
 func (p Point3D) Equal(other *Point3D) bool {
-	return p.x == other.x && p.y == other.y && p.z == other.z
+	return p.X == other.X && p.Y == other.Y && p.Z == other.Z
 }
 
 func (p Point3D) Distance(other *Point3D) float64 {
-	xDelta := float64(p.x - other.x)
-	yDelta := float64(p.y - other.y)
-	zDelta := float64(p.z - other.z)
+	xDelta := float64(p.X - other.X)
+	yDelta := float64(p.Y - other.Y)
+	zDelta := float64(p.Z - other.Z)
 	return math.Sqrt(xDelta*xDelta + yDelta*yDelta + zDelta*zDelta)
-}
-
-func Distance2D(x, y, x1, y1 int) float64 {
-	xDelta := float64(x - x1)
-	yDelta := float64(y - y1)
-	return math.Sqrt(xDelta*xDelta + yDelta*yDelta)
 }
 
 type BoxPair struct {
@@ -48,9 +55,8 @@ type BoxPair struct {
 	distance float64
 }
 
-func Day8Part1(lines []string) int {
+func Day8Part1(lines []string, limitTo int) int {
 	points := make([]Point3D, 0, len(lines))
-	// Max coordinate is approx. 100_000
 	for _, line := range lines {
 		terms := strings.Split(line, ",")
 		x, _ := util.ParseInt(terms[0])
@@ -61,7 +67,7 @@ func Day8Part1(lines []string) int {
 	}
 
 	closestPairs := make([]BoxPair, 0)
-	for i := 0; i < len(points); i++ {
+	for i := 0; i < len(points)-1; i++ {
 		box := points[i]
 		for j := i + 1; j < len(points); j++ {
 			otherBox := points[j]
@@ -80,42 +86,50 @@ func Day8Part1(lines []string) int {
 		return 0
 	})
 
-	circuits := make([][]Point3D, 0)
-	for pairIndex, pair := range closestPairs {
-		if pairIndex == 1000 {
-			break
-		}
-		var p1Circuit, p2Circuit []Point3D
+	connectionsMade := 0
+	circuits := make([]util.Set[int64], 0)
+	for _, pair := range closestPairs {
 		p1Index, p2Index := -1, -1
-		for circuitIndex, circuit := range circuits {
-			for _, point := range circuit {
-				if point.Equal(&pair.p1) {
-					p1Circuit = circuit
-					p1Index = circuitIndex
-					continue
-				}
-				if point.Equal(&pair.p2) {
-					p2Circuit = circuit
-					p2Index = circuitIndex
-				}
+		for index, circuit := range circuits {
+			if p1Index == -1 && circuit.Contains(pair.p1.Hash()) {
+				p1Index = index
+			}
+			if p2Index == -1 && circuit.Contains(pair.p2.Hash()) {
+				p2Index = index
 			}
 		}
-		if p1Circuit != nil && p2Circuit != nil {
-			// Both points have their own circuits or are in the same circuit, therefore they cannot be connected directly
+
+		if p1Index == p2Index {
+			if p1Index != -1 {
+				// It's the same circuit, skip
+				continue
+			}
+			// Neither has a circuit
+			set := util.NewSet[int64](2)
+			set.Add(pair.p1.Hash())
+			set.Add(pair.p2.Hash())
+			circuits = append(circuits, *set)
+			connectionsMade++
+			if connectionsMade >= limitTo {
+				break
+			}
 			continue
 		}
-		if p1Circuit == nil && p2Circuit == nil {
-			// Create new circuit
-			var newCircuit []Point3D
-			newCircuit = append(newCircuit, pair.p1, pair.p2)
-			circuits = append(circuits, newCircuit)
-			continue
-		}
-		// Append to one of the existing circuits
-		if p1Circuit != nil {
-			circuits[p1Index] = append(p1Circuit, pair.p2)
+
+		mergeCircuits := p1Index != -1 && p2Index != -1
+		if mergeCircuits {
+			circuits[p1Index].AddAll(&circuits[p2Index])
+			circuits = util.DeleteAt(circuits, p2Index)
+		} else if p1Index == -1 {
+			// P1 has no circuit, add it to P2's circuit
+			circuits[p2Index].Add(pair.p1.Hash())
 		} else {
-			circuits[p2Index] = append(p2Circuit, pair.p1)
+			// P2 has no circuit, add it to P1's circuit
+			circuits[p1Index].Add(pair.p2.Hash())
+		}
+		connectionsMade++
+		if connectionsMade >= limitTo {
+			break
 		}
 	}
 	if len(circuits) < 3 {
@@ -123,11 +137,11 @@ func Day8Part1(lines []string) int {
 		return -1
 	}
 	fmt.Printf("Circuit count: %v\n", len(circuits))
-	printCircuits(circuits)
+	printCircuits(circuits, points, true)
 	product := 1
 	circuitSizes := make([]int, len(circuits))
 	for _, circuit := range circuits {
-		circuitSizes = append(circuitSizes, len(circuit))
+		circuitSizes = append(circuitSizes, circuit.Size())
 	}
 	threeLargest := util.LargestN(circuitSizes, 3)
 	for _, large := range threeLargest {
@@ -136,11 +150,26 @@ func Day8Part1(lines []string) int {
 	return product
 }
 
-func printCircuits(circuits [][]Point3D) {
+func printCircuits(circuits []util.Set[int64], points []Point3D, byIndex bool) {
 	for _, circuit := range circuits {
-		for _, point := range circuit {
-			fmt.Printf("%v,", point)
+		for k := range circuit.Set {
+			point := UnHash(k)
+			if byIndex {
+				index := inputIndexOf(point, points)
+				fmt.Printf("%v,", index)
+			} else {
+				fmt.Printf("%v,", point)
+			}
 		}
 		fmt.Println()
 	}
+}
+
+func inputIndexOf(p Point3D, points []Point3D) int {
+	for i, point := range points {
+		if point.Equal(&p) {
+			return i
+		}
+	}
+	return -1
 }

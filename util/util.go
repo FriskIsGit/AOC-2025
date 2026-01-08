@@ -167,3 +167,45 @@ func LargestN[T cmp.Ordered](arr []T, n int) []T {
 	}
 	return maxes
 }
+
+func Distance2D(x, y, x1, y1 int) float64 {
+	xDelta := float64(x - x1)
+	yDelta := float64(y - y1)
+	return math.Sqrt(xDelta*xDelta + yDelta*yDelta)
+}
+
+type Set[T comparable] struct {
+	Set map[T]struct{}
+}
+
+func (s *Set[T]) Contains(el T) bool {
+	_, contains := s.Set[el]
+	return contains
+}
+
+func (s *Set[T]) Add(el T) {
+	s.Set[el] = struct{}{}
+}
+
+func (s *Set[T]) Remove(el T) {
+	delete(s.Set, el)
+}
+
+func (s *Set[T]) Size() int {
+	return len(s.Set)
+}
+
+func NewSet[T comparable](capacity int) *Set[T] {
+	return &Set[T]{
+		make(map[T]struct{}, capacity),
+	}
+}
+
+func (s *Set[T]) AddAll(other *Set[T]) {
+	if s == nil || other == nil {
+		return
+	}
+	for k := range other.Set {
+		s.Add(k)
+	}
+}

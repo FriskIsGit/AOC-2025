@@ -359,7 +359,7 @@ func TestDay8Part1Full(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	actual := days.Day8Part1(lines)
+	actual := days.Day8Part1(lines, 1000)
 	equal(-1, actual, t)
 	// 448 is too low
 }
@@ -370,8 +370,15 @@ func TestDay8Part1Demo(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	actual := days.Day8Part1(lines)
+	actual := days.Day8Part1(lines, 10)
 	equal(40, actual, t)
+}
+
+func TestPointMap(t *testing.T) {
+	point := days.Point3D{X: 123, Y: 456, Z: 789}
+	unhashed := days.UnHash(point.Hash())
+	res := unhashed.Equal(&point)
+	equal(res, true, t)
 }
 
 func TestLargestN(t *testing.T) {
@@ -402,6 +409,16 @@ func TestDay9Part1Demo(t *testing.T) {
 	}
 	actual := days.Day9Part1(lines)
 	equal(50, actual, t)
+}
+
+func TestDay9Part2Demo(t *testing.T) {
+	lines, err := loadDemoLines("day9.txt")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	actual := days.Day9Part2(lines)
+	equal(24, actual, t)
 }
 
 // --- Util functions ---
