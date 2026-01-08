@@ -4,7 +4,6 @@ import (
 	"aoc-2025/days"
 	"aoc-2025/util"
 	"cmp"
-	"math"
 	"strconv"
 	"testing"
 )
@@ -380,7 +379,7 @@ func TestDay8Part2Demo(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	actual := days.Day8Part2(lines, math.MaxInt32)
+	actual := days.Day8Part2(lines)
 	equal(25272, actual, t)
 }
 
@@ -390,7 +389,7 @@ func TestDay8Part2Full(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	actual := days.Day8Part2(lines, math.MaxInt32)
+	actual := days.Day8Part2(lines)
 	equal(274150525, actual, t)
 }
 
