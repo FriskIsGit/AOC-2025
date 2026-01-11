@@ -209,3 +209,8 @@ func (s *Set[T]) AddAll(other *Set[T]) {
 		s.Add(k)
 	}
 }
+
+func TrimLeftAndRight(s string, left, right string) string {
+	s = strings.TrimLeft(s, left)
+	return strings.TrimRight(s, right)
+}
