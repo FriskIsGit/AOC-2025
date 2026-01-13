@@ -78,6 +78,16 @@ func runDay(day int) {
 	case 6:
 		resultPart1 = days.Day6Part1(lines)
 		resultPart2 = days.Day6Part2(lines)
+	case 7:
+		resultPart1 = days.Day7Part1(lines)
+		resultPart2 = days.Day7Part2(lines)
+	case 8:
+		resultPart1 = days.Day8Part1(lines, 1000)
+		resultPart2 = days.Day8Part2(lines)
+	case 9:
+		resultPart1 = days.Day9Part1(lines)
+	case 10:
+		resultPart1 = days.Day10Part1(lines)
 	default:
 		util.ErrExit("Unimplemented day:", day)
 	}
