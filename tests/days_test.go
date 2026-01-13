@@ -449,7 +449,7 @@ func TestDay10Part1Full(t *testing.T) {
 		return
 	}
 	actual := days.Day10Part1(lines)
-	equal(-1, actual, t)
+	equal(444, actual, t)
 }
 
 func TestDay10Part1Demo(t *testing.T) {
@@ -459,7 +459,29 @@ func TestDay10Part1Demo(t *testing.T) {
 		return
 	}
 	actual := days.Day10Part1(lines)
-	equal(-1, actual, t)
+	equal(7, actual, t)
+}
+
+func TestDay10ButtonResult(t *testing.T) {
+	button1, button2 := []int{2, 3}, []int{1, 3}
+	expected := []int{1, 2}
+
+	result := days.ButtonResult(button1, button2)
+	arrayEquals(expected, result, t)
+	result = days.ButtonResult(button2, button1)
+	arrayEquals(expected, result, t)
+}
+
+func TestAllCombinations(t *testing.T) {
+	elements := []int{1, 2, 3, 4}
+	expectedSize := util.POWERS_OF_2[len(elements)]
+	combinationsSet := util.NewSet[int](expectedSize)
+	combinations := util.AllCombinations(elements)
+	for _, combination := range combinations {
+		hash := util.HashSlice(combination)
+		combinationsSet.Add(hash)
+	}
+	equal(expectedSize, combinationsSet.Size(), t)
 }
 
 // --- Util functions ---

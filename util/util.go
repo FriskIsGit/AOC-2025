@@ -214,3 +214,49 @@ func TrimLeftAndRight(s string, left, right string) string {
 	s = strings.TrimLeft(s, left)
 	return strings.TrimRight(s, right)
 }
+
+func MemZeroBoolArray(b []bool) {
+	for i := range b {
+		b[i] = false
+	}
+}
+
+func CopyAppend[T any](source []T, newEl T) []T {
+	dest := make([]T, len(source)+1)
+	copy(dest, source)
+	dest[len(dest)-1] = newEl
+	return dest
+}
+
+type Number interface {
+	int | int8 | int16 | int32 | int64 | float32 | float64 | uint | uint8 | uint16 | uint32 | uint64
+}
+
+func HashSlice[T Number](slice []T) T {
+	hash := T(0)
+	prime := T(31) // Choose a prime number for better distribution
+
+	for _, value := range slice {
+		hash = hash*prime + value
+	}
+	return hash
+}
+
+var POWERS_OF_2 = [18]int{1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072}
+
+func AllCombinations[T any](elements []T) [][]T {
+	allCombinationsCount := POWERS_OF_2[len(elements)]
+	combinations := make([][]T, 0, allCombinationsCount)
+	nextCombinations := make([][]T, 0, allCombinationsCount)
+
+	combinations = append(combinations, []T{})
+	for _, el := range elements {
+		for _, comb := range combinations {
+			newComb := CopyAppend(comb, el)
+			nextCombinations = append(nextCombinations, comb, newComb)
+		}
+		combinations, nextCombinations = nextCombinations, combinations
+		nextCombinations = nextCombinations[:0]
+	}
+	return combinations
+}

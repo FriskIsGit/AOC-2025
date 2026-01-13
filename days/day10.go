@@ -2,6 +2,7 @@ package days
 
 import (
 	"aoc-2025/util"
+	"slices"
 	"strings"
 )
 
@@ -9,7 +10,26 @@ func Day10Part1(lines []string) int {
 	machines := parseMachines(lines)
 	presses := 0
 	for _, m := range machines {
-		_ = m
+		targetButton := m.getTargetButton()
+		minPresses := len(m.buttons)
+
+		// Generate combinations
+		buttonCombinations := util.AllCombinations(m.buttons)
+		for _, buttonComb := range buttonCombinations {
+			if len(buttonComb) == 0 {
+				continue
+			}
+			result := buttonComb[0]
+			for i := 1; i < len(buttonComb); i++ {
+				result = ButtonResult(result, buttonComb[i])
+			}
+			if slices.Equal(result, targetButton) {
+				if len(buttonComb) < minPresses {
+					minPresses = len(buttonComb)
+				}
+			}
+		}
+		presses += minPresses
 	}
 	return presses
 }
@@ -59,25 +79,35 @@ type Machine struct {
 	requirements []int
 }
 
-func Press(lights []bool, button []int) {
-	for _, lightIndex := range button {
-		lights[lightIndex] = !lights[lightIndex]
+func (m Machine) getTargetButton() []int {
+	targetButton := make([]int, 0, len(m.buttons))
+	for i, on := range m.targetLights {
+		if on {
+			targetButton = append(targetButton, i)
+		}
 	}
+	return targetButton
 }
 
-func Compile(button1 []int, button2 []int) []int {
-	compiled := make([]int, 0)
-	for _, b1 := range button1 {
-		unique := true
-		for _, b2 := range button2 {
-			if b1 == b2 {
-				unique = false
-				break
-			}
-		}
-		if unique {
-			compiled = append(compiled, b1)
+// Size of this buffer is decided by max light count
+var lightBuffer = make([]bool, 16)
+
+func ButtonResult(button1 []int, button2 []int) []int {
+	util.MemZeroBoolArray(lightBuffer)
+	result := make([]int, 0)
+	for _, lightIndex := range button1 {
+		lightBuffer[lightIndex] = !lightBuffer[lightIndex]
+	}
+	for _, lightIndex := range button2 {
+		lightBuffer[lightIndex] = !lightBuffer[lightIndex]
+	}
+	for i, on := range lightBuffer {
+		if on {
+			result = append(result, i)
 		}
 	}
-	return compiled
+	return result
 }
+
+var FACTORIALS = []int64{
+	1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600, 6227020800, 87178291200, 1307674368000}
