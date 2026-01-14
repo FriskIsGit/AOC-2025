@@ -14,18 +14,20 @@ func Day10Part1(lines []string) int {
 		minPresses := len(m.buttons)
 
 		// Generate combinations
-		buttonCombinations := util.AllCombinations(m.buttons)
-		for _, buttonComb := range buttonCombinations {
-			if len(buttonComb) == 0 {
-				continue
-			}
-			result := buttonComb[0]
-			for i := 1; i < len(buttonComb); i++ {
-				result = ButtonResult(result, buttonComb[i])
-			}
-			if slices.Equal(result, targetButton) {
-				if len(buttonComb) < minPresses {
-					minPresses = len(buttonComb)
+	combinations:
+		for p := 1; p < len(m.buttons); p++ {
+			combInstance := util.NewCombinations(len(m.buttons), p)
+			for combInstance.NextCombination() {
+				buttonIndexes := combInstance.Indexes
+				result := m.buttons[buttonIndexes[0]]
+				for i := 1; i < p; i++ {
+					result = ButtonResult(result, m.buttons[buttonIndexes[i]])
+				}
+				if slices.Equal(result, targetButton) {
+					if p < minPresses {
+						minPresses = p
+						break combinations
+					}
 				}
 			}
 		}

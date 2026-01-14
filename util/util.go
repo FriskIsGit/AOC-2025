@@ -260,3 +260,50 @@ func AllCombinations[T any](elements []T) [][]T {
 	}
 	return combinations
 }
+
+type Combinations struct {
+	Indexes   []int
+	itemCount int
+	first     bool
+}
+
+// NewCombinations creates a combinations object based on k (number of elements to select)
+// n is the total number of items
+func NewCombinations(n, k int) *Combinations {
+	if k < 0 {
+		panic("the number of elements to select cannot be negative")
+	}
+	indexes := make([]int, k)
+	for i := 0; i < k; i++ {
+		indexes[i] = i
+	}
+	return &Combinations{Indexes: indexes, itemCount: n, first: true}
+}
+
+// NextCombination moves indexes to the next combination, returns false when there are no more available combinations
+// The first combination is not moved to simplify loop usage
+func (c *Combinations) NextCombination() bool {
+	if c.itemCount < len(c.Indexes) {
+		panic("not enough items to construct combinations")
+	}
+	if c.first {
+		c.first = false
+		return true
+	}
+	indexCount := len(c.Indexes)
+	available := false
+	for back, lastPosIndex := indexCount-1, c.itemCount-1; back >= 0; back, lastPosIndex = back-1, lastPosIndex-1 {
+		if c.Indexes[back] >= lastPosIndex {
+			continue
+		}
+		available = true
+		c.Indexes[back]++
+		indexValue := c.Indexes[back]
+		for i := back + 1; i < indexCount; i++ {
+			indexValue++
+			c.Indexes[i] = indexValue
+		}
+		break
+	}
+	return available
+}

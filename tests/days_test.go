@@ -4,6 +4,7 @@ import (
 	"aoc-2025/days"
 	"aoc-2025/util"
 	"cmp"
+	"fmt"
 	"strconv"
 	"testing"
 )
@@ -482,6 +483,18 @@ func TestAllCombinations(t *testing.T) {
 		combinationsSet.Add(hash)
 	}
 	equal(expectedSize, combinationsSet.Size(), t)
+}
+
+func TestIndexCombinations(t *testing.T) {
+	elements := []int{1, 2, 3, 4}
+	c := util.NewCombinations(4, 1)
+
+	for c.NextCombination() {
+		for _, index := range c.Indexes {
+			fmt.Printf("%v ", elements[index])
+		}
+		fmt.Println()
+	}
 }
 
 // --- Util functions ---
